@@ -1,16 +1,16 @@
 class arthurjames::profile_puppet (
-  $dns_alt_names               = [$::fqdn, puppet],
+  $dns_alt_names               = [$::fqdn],
   $puppetmaster                = $::fqdn,
-  $runmode                     = 'service',
-  $server                      = true,
-  $server_ca                   = true,
+  $runmode                     = 'cron',
+  $server                      = false,
+  $server_ca                   = false,
   $server_environments         = [],
-  $server_foreman              = true,
-  $server_foreman_url          = "https://${::fqdn}",
+  $server_foreman              = false,
+  $server_foreman_url          = undef,
   $server_external_nodes       = '/etc/puppet/node.rb',
-  $server_implementation       = 'master',
+  $server_implementation       = undef,
   $server_parser               = 'future',
-  $server_passenger            = true,
+  $server_passenger            = false,
   $server_puppetdb_host        = $::fqdn,
   $server_reports              = 'puppetdb,foreman',
   $server_storeconfigs_backend = 'puppetdb',
@@ -38,5 +38,4 @@ class arthurjames::profile_puppet (
     show_diff                   => $show_diff,
     splay                       => $splay
   }
-
 }
