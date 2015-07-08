@@ -1,6 +1,6 @@
 class arthurjames::profile_puppet (
   $dns_alt_names               = [$::fqdn],
-  $puppetmaster                = $::fqdn,
+  $puppetmaster                = undef,
   $runmode                     = 'cron',
   $server                      = false,
   $server_ca                   = false,
