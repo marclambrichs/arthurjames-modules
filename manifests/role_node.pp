@@ -36,5 +36,6 @@
 # Copyright 2015 Your name here, unless otherwise noted.
 #
 class arthurjames::role_node {
+  include ::timezone
   include ::arthurjames::profile_puppet
 }
