@@ -1,6 +1,6 @@
 class arthurjames::profile_puppet (
   $dns_alt_names               = [$::fqdn],
-  $puppetmaster                = undef,
+  $puppetmaster                = $::fqdn,
   $runmode                     = 'cron',
   $server                      = false,
   $server_ca                   = false,
@@ -21,7 +21,7 @@ class arthurjames::profile_puppet (
   # Agent and puppet:
   class { '::puppet':
     dns_alt_names               => $dns_alt_names,
-    puppetmaster                => $::fqdn,
+    puppetmaster                => $puppetmaster,
     runmode                     => $runmode,
     server                      => $server,
     server_ca                   => $server_ca,
