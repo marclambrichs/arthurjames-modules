@@ -13,7 +13,8 @@ class arthurjames::profile_puppetmaster (
   $server_reports              = 'puppetdb,foreman',
   $server_storeconfigs_backend = 'puppetdb',
   $show_diff                   = true,
-  $splay                       = true
+  $splay                       = true,
+  $puppetdb_confdir            = '/etc/puppetdb/conf.d'
 ){
 
   # Agent and puppetmaster:
@@ -36,4 +37,7 @@ class arthurjames::profile_puppetmaster (
     splay                       => $splay
   }
 
+  class { '::puppetdb':
+    confdir = $puppetdb_confdir
+  }
 }
