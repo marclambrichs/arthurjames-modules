@@ -7,6 +7,9 @@ class arthurjames::profile_puppetdb (
 ){
 
   # Configure puppetdb and its underlying database
+  class { '::puppetdb::globals':
+    version => $puppetdb_version
+  }
   class { '::puppetdb': }
 
 }
