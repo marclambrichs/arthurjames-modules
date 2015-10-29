@@ -6,10 +6,9 @@ class arthurjames::profile_puppetdb (
   $puppetdb_version   = '2.3.8-1puppetlabs1'
 ){
 
-  class{ '::puppetdb::globals':
+  class { '::puppetdb::globals':
     puppetdb_version   => $puppetdb_version
   }
-
   # Configure puppetdb and its underlying database
   class { '::puppetdb':
     listen_address     => $listen_address,
@@ -17,4 +16,5 @@ class arthurjames::profile_puppetdb (
     manage_firewall    => $manage_firewall,
     ssl_listen_address => $ssl_listen_address
   }
+  class { 'puppetdb::master::config': }
 }
