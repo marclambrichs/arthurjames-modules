@@ -2,7 +2,7 @@ class arthurjames::profile_foreman (
   $foreman_admin_password = 'changeme',
   $foreman_host           = $::fqdn,
   $foreman_repo           = 'stable',
-  $ssl                    = true
+  $ssl                    = false
 ){
 
   class { '::foreman':
