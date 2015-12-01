@@ -5,8 +5,8 @@ class arthurjames::profile_foreman (
   $ssl                    = true,
   $server_ssl_ca          = '/var/lib/puppet/ssl/certs/ca.pem',
   $server_ssl_chain       = '/var/lib/puppet/ssl/certs/ca.pem',
-  $server_ssl_cert        = '/var/lib/puppet/ssl/certs/${::fqdn}.pem',
-  $server_ssl_key         = '/var/lib/puppet/ssl/private_keys/${::fqdn}.pem',
+  $server_ssl_cert        = "/var/lib/puppet/ssl/certs/${::fqdn}.pem",
+  $server_ssl_key         = "/var/lib/puppet/ssl/private_keys/${::fqdn}.pem",
   $server_ssl_crl         = '/var/lib/puppet/ssl/ca/ca_crl.pem',
 ){
 
