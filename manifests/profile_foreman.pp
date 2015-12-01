@@ -34,14 +34,14 @@ class arthurjames::profile_foreman (
   }
 
   class { '::foreman_proxy':
-    foreman_base_url => "http://${foreman_host}",
+    foreman_base_url => "https://${foreman_host}",
     bmc              => false,
     dhcp             => false,
     dns              => false,
     puppetca         => true,
     puppetrun        => true,
     tftp             => false,
-    trusted_hosts    => [$::fqdn]
+    trusted_hosts    => [$::fqdn, $foreman_host]
   }
 
   ::foreman::plugin { 'puppetdb':
