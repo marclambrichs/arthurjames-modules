@@ -11,7 +11,7 @@ class arthurjames::profile_puppet (
   $server_implementation       = undef,
   $server_parser               = 'future',
   $server_passenger            = false,
-  $server_puppetdb_host        = $::fqdn,
+  $server_puppetdb_host        = undef,
   $server_reports              = 'puppetdb,foreman',
   $server_storeconfigs_backend = 'puppetdb',
   $show_diff                   = true,
