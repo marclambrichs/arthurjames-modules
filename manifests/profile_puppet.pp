@@ -18,7 +18,7 @@ class arthurjames::profile_puppet (
   $splay                       = true
 ){
 
-  # Agent and puppet:
+  # agent and master:
   class { '::puppet':
     dns_alt_names               => $dns_alt_names,
     puppetmaster                => $puppetmaster,

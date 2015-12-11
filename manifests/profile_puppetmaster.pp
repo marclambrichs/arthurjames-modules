@@ -40,4 +40,12 @@ class arthurjames::profile_puppetmaster (
   class { '::puppetdb':
     confdir = $puppetdb_confdir
   }
+
+  # for module development, make sure puppetmaster can pick up your work
+  file { '/usr/share/puppet/modules':
+    ensure  => 'link',
+    target  => '/vagrant/modules',
+    force   => true,     
+    replace => true,
+  }
 }
