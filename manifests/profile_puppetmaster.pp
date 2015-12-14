@@ -3,6 +3,7 @@ class arthurjames::profile_puppetmaster (
   $runmode                     = 'service',
   $server                      = true,
   $server_ca                   = true,
+  $server_common_modules_path  = [],
   $server_foreman              = true,
   $server_foreman_url          = "https://${::fqdn}",
   $server_external_nodes       = '/etc/puppet/node.rb',
@@ -23,6 +24,7 @@ class arthurjames::profile_puppetmaster (
     runmode                     => $runmode,
     server                      => $server,
     server_ca                   => $server_ca,
+    server_common_modules_path  => $server_common_modules_path,
     server_environments         => [],
     server_foreman              => $server_foreman,
     server_foreman_url          => $server_foreman_url,
@@ -48,4 +50,5 @@ class arthurjames::profile_puppetmaster (
     force   => true,     
     replace => true,
   }
+  Class['::puppet'] -> File['/usr/share/puppet/modules']
 }
