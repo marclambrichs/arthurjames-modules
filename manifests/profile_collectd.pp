@@ -71,6 +71,19 @@
 #   Integer.
 #   Default: undef
 #
+# [*plugin_genericjmx*]
+#   Boolean. Enables or disables genericjmx plugin. Reads mbeans from mbeanserver
+#   using jmx.
+#   Default: false.
+#
+# [*plugin_genericjmx_mbean_params*]
+#   Hash.
+#   Default: {}.
+#
+# [*plugin_genericjmx_connection_params*]
+#   Hash.
+#   Default: {}.
+#
 # [*plugin_interface_interfaces*]
 #   Array.
 #   Default: ['lo']
@@ -136,11 +149,10 @@
 # Copyright 2016 Marc Lambrichs
 #
 class arthurjames::profile_collectd (
-  $plugin_network_listener                = false,
-  $fqdnlookup                             = false,
-  $graphitehost                           = 'graphite-gold.europe.intranet',
-  $graphiteport                           = 2003,
-  $parameterless_plugins                  = [
+  $fqdnlookup                              = false,
+  $graphitehost                            = 'graphite.arthurjames.vagrant',
+  $graphiteport                            = 2003,
+  $parameterless_plugins                   = [
     'entropy',
     'load',
     'memory',
@@ -161,8 +173,12 @@ class arthurjames::profile_collectd (
   $plugin_disk_disks                       = ['/^dm/', '/[0-9]/'],
   $plugin_disk_ignoreselected              = false,
   $plugin_disk_interval                    = undef,
+  $plugin_genericjmx                       = false,
+  $plugin_genericjmx_mbean_params          = {},
+  $plugin_genericjmx_connection_params     = {},
   $plugin_interface_interfaces             = ['lo'],
   $plugin_interface_ignoreselected         = true,
+  $plugin_network_listener                 = false,
   $plugin_network_server                   = $graphitehost,
   $plugin_network_port                     = 25826,
   $plugin_write_graphite_graphitehost      = $graphitehost,
@@ -175,6 +191,12 @@ class arthurjames::profile_collectd (
   $version                                 = latest,
   $write_graphite                          = true,
 ) {
+
+  validate_bool( $plugin_genericjmx )
+  if $plugin_genericjmx {
+    validate_hash( $plugin_genericjmx_mbean_params )
+    validate_hash( $plugin_genericjmx_connection_params )
+  }
 
   class { '::collectd':
     fqdnlookup   => $fqdnlookup,
@@ -196,7 +218,7 @@ class arthurjames::profile_collectd (
   ## Either write directly to graphite, or write to central collectd server
   if $write_graphite {
     ## plugin write_graphite stores values in carbon.
-    class { 'collectd::plugin::write_graphite':
+    collectd::plugin::write_graphite::carbon { $plugin_write_graphite_graphitehost:
       graphitehost   => $plugin_write_graphite_graphitehost,
       graphiteport   => $plugin_write_graphite_graphiteport,
       graphiteprefix => $plugin_write_graphite_graphiteprefix,
@@ -244,11 +266,10 @@ class arthurjames::profile_collectd (
   collectd::plugin { $parameterless_plugins: }
 
   ## and last, but not least all plugins any user would like to use
-  if $plugin_genericjmx_mbean {
+  if $plugin_genericjmx {
+    ## map mbean attributes to types used by collectd
     create_resources( 'collectd::plugin::genericjmx::mbean', $plugin_genericjmx_mbean_params )
-  }
-
-  if $plugin_genericjmx_connection {
+    ## define parameters to connect to a MBeanServer and what data to collect
     create_resources( 'collectd::plugin::genericjmx::connection', $plugin_genericjmx_connection_params )
   }
     
