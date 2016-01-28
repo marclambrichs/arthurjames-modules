@@ -4,10 +4,10 @@
 #
 # === Parameters
 #
-# [*graphite_url*]
+# [*graphitehost*]
 #   String to define the url of the graphite server where the metrics can be written to.
 #
-# [*graphite_port*]
+# [*graphiteport*]
 #   Integer to define the port on which the graphite server is listening.
 #
 # [*parameterless_plugins*]
@@ -92,18 +92,9 @@
 #   Boolean.
 #   Default: true
 #
-# [*plugin_network_server*]
-#   Hostname of the central collectd server your instance is writing to. 
-#
 # [*plugin_network_port*]
 #   Port of the central collectd instance.
 #   Default: 25826
-#
-# [*plugin_write_graphite_graphitehost*]
-#   Hostname of graphite server your instance is writing to.
-#
-# [*plugin_write_graphite_graphiteport*]
-#   Port of graphite server. 
 #
 # [*plugin_write_graphite_graphiteprefix*]
 #   String, that's being prefixed to your metrics.
@@ -179,10 +170,7 @@ class arthurjames::profile_collectd (
   $plugin_interface_interfaces             = ['lo'],
   $plugin_interface_ignoreselected         = true,
   $plugin_network_listener                 = false,
-  $plugin_network_server                   = $graphitehost,
   $plugin_network_port                     = 25826,
-  $plugin_write_graphite_graphitehost      = $graphitehost,
-  $plugin_write_graphite_graphiteport      = $graphiteport,
   $plugin_write_graphite_graphiteprefix    = '',
   $plugin_write_graphite_graphite_protocol = 'tcp',
   $purge                                   = true,
@@ -218,15 +206,15 @@ class arthurjames::profile_collectd (
   ## Either write directly to graphite, or write to central collectd server
   if $write_graphite {
     ## plugin write_graphite stores values in carbon.
-    collectd::plugin::write_graphite::carbon { $plugin_write_graphite_graphitehost:
-      graphitehost   => $plugin_write_graphite_graphitehost,
-      graphiteport   => $plugin_write_graphite_graphiteport,
+    collectd::plugin::write_graphite::carbon { $graphitehost:
+      graphitehost   => $graphitehost,
+      graphiteport   => $graphiteport,
       graphiteprefix => $plugin_write_graphite_graphiteprefix,
       protocol       => $plugin_write_graphite_graphite_protocol
     }
   } else {
     ## plugin network server provides a central collectd instance.
-    collectd::plugin::network::server{ $plugin_network_server:
+    collectd::plugin::network::server{ $graphitehost:
       port => $plugin_network_port,
     }
   }
