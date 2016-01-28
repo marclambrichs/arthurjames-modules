@@ -122,14 +122,30 @@
 #  include ::arthurjames::profile_collectd
 #
 #  If user of this profile wants to use a different plugin, then he
-#  should put that in his own profile. For instance,
+#  should add info to hiera. For instance, for the jmx plugin:
 #
-#  collectd::plugin::genericjmx::connection {
-#    'java_app':
-#      host        => $fqdn,
-#      service_url => 'service:jmx:rmi:///jndi/rmi://localhost:3637/jmxrmi',
-#      collect     => ['memory-heap', 'memory-noheap', 'garbage_collector']
-#  }
+#  arthurjames::profile_collectd::plugin_genericjmx: true
+#  arthurjames::profile_collectd::plugin_genericjmx_mbean_params:
+#    garbage_collector:
+#      object_name: 'java.lang:type=GarbageCollector,*'
+#      instance_prefix: 'gc-'
+#      instance_from: 'name'
+#      values:
+#        - type: 'invocations'
+#          table: false
+#          attribute: 'CollectionCount'
+#        - type: 'total_time_in_ms'
+#          instance_prefix: 'collection_time'
+#          table: false
+#          attribute: 'CollectionTime'
+#  arthurjames::profile_collectd::plugin_genericjmx_connection_params:
+#    java_app:
+#      host: "%{::fqdn}"
+#      service_url: 'service:jmx:rmi:///jndi/rmi://localhost:3637/jmxrmi'
+#      collect:
+#        - 'memory-heap'
+#        - 'memory-nonheap'
+#        - 'garbage_collector'
 #
 # === Authors
 #
