@@ -37,5 +37,6 @@
 #
 class arthurjames::role_node {
   include ::timezone
+  include ::collectd
   include ::arthurjames::profile_puppet
 }
