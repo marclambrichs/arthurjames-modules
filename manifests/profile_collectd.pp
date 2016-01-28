@@ -267,6 +267,7 @@ class arthurjames::profile_collectd (
 
   ## and last, but not least all plugins any user would like to use
   if $plugin_genericjmx {
+    notify { 'plugin_genericjmx enabled': }
     ## map mbean attributes to types used by collectd
     create_resources( 'collectd::plugin::genericjmx::mbean', $plugin_genericjmx_mbean_params )
     ## define parameters to connect to a MBeanServer and what data to collect
