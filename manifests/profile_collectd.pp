@@ -5,9 +5,9 @@
 # === Parameters
 #
 # [*graphitehost*]
-#   String to define the url of the graphite server where the metrics can be written to.
+#   String to define the host of the graphite server where the metrics can be written to.
 #
-# [*graphiteport*]
+# [*graphite_port*]
 #   Integer to define the port on which the graphite server is listening.
 #
 # [*parameterless_plugins*]
@@ -71,18 +71,33 @@
 #   Integer.
 #   Default: undef
 #
-# [*plugin_genericjmx*]
-#   Boolean. Enables or disables genericjmx plugin. Reads mbeans from mbeanserver
-#   using jmx.
-#   Default: false.
-#
-# [*plugin_genericjmx_mbean_params*]
-#   Hash.
-#   Default: {}.
+# [*plugin_genericjmx_connection*]
+#   Boolean.
+#   Default: false
 #
 # [*plugin_genericjmx_connection_params*]
 #   Hash.
-#   Default: {}.
+#   Default: {
+#     collect         => undef,
+#     service_url     => undef,
+#     host            => $name,
+#     user            => undef,
+#     password        => undef,
+#     instance_prefix => undef 
+#   } 
+#
+# [*plugin_genericjmx_mbean*]
+#   Boolean.
+#   Default: false
+#
+# [*plugin_genericjmx_mbean_params*]
+#   Hash.
+#   Default: { 
+#     object_name     => undef,
+#     values          => [],
+#     instance_prefix => undef,
+#     instance_from   => undef
+#   }
 #
 # [*plugin_interface_interfaces*]
 #   Array.
@@ -92,9 +107,22 @@
 #   Boolean.
 #   Default: true
 #
+# [*plugin_java*]
+#   Boolean.
+#   Default: false
+#
+# [*plugin_network_server*]
+#   Hostname of the central collectd server your instance is writing to. 
+#
 # [*plugin_network_port*]
 #   Port of the central collectd instance.
 #   Default: 25826
+#
+# [*plugin_write_graphite_graphitehost*]
+#   Hostname of graphite server your instance is writing to.
+#
+# [*plugin_write_graphite_graphiteport*]
+#   Port of graphite server. 
 #
 # [*plugin_write_graphite_graphiteprefix*]
 #   String, that's being prefixed to your metrics.
@@ -122,44 +150,26 @@
 #  include ::arthurjames::profile_collectd
 #
 #  If user of this profile wants to use a different plugin, then he
-#  should add info to hiera. For instance, for the jmx plugin:
+#  should put that in his own profile. For instance,
 #
-#  arthurjames::profile_collectd::plugin_genericjmx: true
-#  arthurjames::profile_collectd::plugin_genericjmx_mbean_params:
-#    garbage_collector:
-#      object_name: 'java.lang:type=GarbageCollector,*'
-#      instance_prefix: 'gc-'
-#      instance_from: 'name'
-#      values:
-#        - type: 'invocations'
-#          table: false
-#          attribute: 'CollectionCount'
-#        - type: 'total_time_in_ms'
-#          instance_prefix: 'collection_time'
-#          table: false
-#          attribute: 'CollectionTime'
-#  arthurjames::profile_collectd::plugin_genericjmx_connection_params:
-#    java_app:
-#      host: "%{::fqdn}"
-#      service_url: 'service:jmx:rmi:///jndi/rmi://localhost:3637/jmxrmi'
-#      collect:
-#        - 'memory-heap'
-#        - 'memory-nonheap'
-#        - 'garbage_collector'
+#  collectd::plugin::genericjmx::connection {
+#    'java_app':
+#      host        => $fqdn,
+#      service_url => 'service:jmx:rmi:///jndi/rmi://localhost:3637/jmxrmi',
+#      collect     => ['memory-heap', 'memory-noheap', 'garbage_collector']
+#  }
 #
-# === Authors
-#
-# Author Name <marc.lambrichs@gmail.com>
 #
 # === Copyright
 #
-# Copyright 2016 Marc Lambrichs
+# Copyright 2016 Melange IT B.V.
 #
 class arthurjames::profile_collectd (
-  $fqdnlookup                              = false,
-  $graphitehost                            = 'graphite.arthurjames.vagrant',
-  $graphiteport                            = 2003,
-  $parameterless_plugins                   = [
+  $plugin_network_listener                = false,
+  $fqdnlookup                             = false,
+  $graphitehost                           = 'graphite-gold.europe.intranet',
+  $graphiteport                           = 2003,
+  $parameterless_plugins                  = [
     'entropy',
     'load',
     'memory',
@@ -170,7 +180,7 @@ class arthurjames::profile_collectd (
   $plugin_cpu_reportbystate                = true,
   $plugin_cpu_reportbycpu                  = false,
   $plugin_cpu_valuespercentage             = true,
-  $plugin_df_fstypes                       = ['nfs', 'tmpfs', 'autofs', 'gpfs', 'proc', 'devpts'],
+  $plugin_df_fstypes                       = ['nfs', 'tmpfs', 'autofs', 'gpfs', 'lvm', 'proc', 'devpts'],
   $plugin_df_mountpoints                   = ['/', '/var', '/var/log', '/tmp', '/usr'],
   $plugin_df_ignoreselected                = true,
   $plugin_df_reportbydevice                = false,
@@ -180,27 +190,66 @@ class arthurjames::profile_collectd (
   $plugin_disk_disks                       = ['/^dm/', '/[0-9]/'],
   $plugin_disk_ignoreselected              = false,
   $plugin_disk_interval                    = undef,
-  $plugin_genericjmx                       = false,
-  $plugin_genericjmx_mbean_params          = {},
+  $plugin_genericjmx_connection            = false,
   $plugin_genericjmx_connection_params     = {},
+  $plugin_genericjmx_mbean                 = false,
+  $plugin_genericjmx_mbean_params          = {},
+  $plugin_java                             = false,
   $plugin_interface_interfaces             = ['lo'],
   $plugin_interface_ignoreselected         = true,
-  $plugin_network_listener                 = false,
   $plugin_network_port                     = 25826,
-  $plugin_write_graphite_graphiteprefix    = '',
+  $plugin_write_graphite_graphiteprefix    = undef,
   $plugin_write_graphite_graphite_protocol = 'tcp',
   $purge                                   = true,
   $purge_config                            = true,
   $recurse                                 = true,
-  $version                                 = latest,
+  $version                                 = present,
   $write_graphite                          = true,
 ) {
 
-  validate_bool( $plugin_genericjmx )
-  if $plugin_genericjmx {
-    validate_hash( $plugin_genericjmx_mbean_params )
-    validate_hash( $plugin_genericjmx_connection_params )
-  }
+  $plugin_network_server                   = $graphitehost
+  $plugin_write_graphite_graphitehost      = $graphitehost
+  $plugin_write_graphite_graphiteport      = $graphiteport
+
+  # validate boolean params
+  validate_bool($plugin_network_listener)
+  validate_bool($fqdnlookup)
+  validate_bool($plugin_cpu_reportbystate)
+  validate_bool($plugin_cpu_reportbycpu)
+  validate_bool($plugin_cpu_valuespercentage)
+  validate_bool($plugin_df_ignoreselected)
+  validate_bool($plugin_df_reportbydevice)
+  validate_bool($plugin_df_reportinodes)
+  validate_bool($plugin_df_valuesabsolute)
+  validate_bool($plugin_df_valuespercentage)
+  validate_bool($plugin_disk_ignoreselected)
+  validate_bool($plugin_genericjmx_connection)
+  validate_bool($plugin_genericjmx_mbean)
+  validate_bool($plugin_java)
+  validate_bool($plugin_interface_ignoreselected)
+  validate_bool($purge)
+  validate_bool($purge_config)
+  validate_bool($recurse)
+  validate_bool($write_graphite)
+
+  # validate integer params
+  validate_integer($graphiteport)
+  validate_integer($plugin_network_port)
+  
+  # validate string parameters
+  validate_string($graphitehost)
+
+  # validate array params
+  validate_array($parameterless_plugins)
+  validate_array($plugin_df_fstypes)
+  validate_array($plugin_df_mountpoints)
+  validate_array($plugin_disk_disks)
+  validate_array($plugin_interface_interfaces)
+
+  # validate hash params
+  validate_hash($plugin_genericjmx_connection_params)
+  validate_hash($plugin_genericjmx_mbean_params)
+
 
   class { '::collectd':
     fqdnlookup   => $fqdnlookup,
@@ -222,15 +271,15 @@ class arthurjames::profile_collectd (
   ## Either write directly to graphite, or write to central collectd server
   if $write_graphite {
     ## plugin write_graphite stores values in carbon.
-    collectd::plugin::write_graphite::carbon { $graphitehost:
-      graphitehost   => $graphitehost,
-      graphiteport   => $graphiteport,
+    collectd::plugin::write_graphite::carbon { $plugin_write_graphite_graphitehost:
+      graphitehost   => $plugin_write_graphite_graphitehost,
+      graphiteport   => $plugin_write_graphite_graphiteport,
       graphiteprefix => $plugin_write_graphite_graphiteprefix,
       protocol       => $plugin_write_graphite_graphite_protocol
     }
   } else {
     ## plugin network server provides a central collectd instance.
-    collectd::plugin::network::server{ $graphitehost:
+    collectd::plugin::network::server{ $plugin_network_server:
       port => $plugin_network_port,
     }
   }
@@ -270,12 +319,27 @@ class arthurjames::profile_collectd (
   collectd::plugin { $parameterless_plugins: }
 
   ## and last, but not least all plugins any user would like to use
-  if $plugin_genericjmx {
-    notify { 'plugin_genericjmx enabled': }
-    ## map mbean attributes to types used by collectd
+
+  if $plugin_java {
+    class { 'collectd::plugin::java': }
+  }
+
+  if $plugin_genericjmx_mbean or $plugin_genericjmx_connection {
+
+    file{'/etc/ld.so.conf.d/java.conf':
+      ensure  => present,
+      content => '/usr/lib/jvm/jre/lib/amd64/server/'
+    } ~>
+    exec{'ldconfig':
+      path => ['/usr/bin', '/usr/sbin', '/sbin']
+    }
+  }
+
+  if $plugin_genericjmx_mbean {
     create_resources( 'collectd::plugin::genericjmx::mbean', $plugin_genericjmx_mbean_params )
-    ## define parameters to connect to a MBeanServer and what data to collect
+  }
+
+  if $plugin_genericjmx_connection {
     create_resources( 'collectd::plugin::genericjmx::connection', $plugin_genericjmx_connection_params )
   }
-    
 }

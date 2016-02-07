@@ -4,10 +4,10 @@ class arthurjames::profile_relay (
 ){
   case $relay_type {
     'carbon-c-relay': {
-      include carbon-c-relay
+      include carbon_c_relay
     }
     'carbon-relay-ng': {
-      include carbon-relay-ng
+      include carbon_relay_ng
     }
     default: {
     }
