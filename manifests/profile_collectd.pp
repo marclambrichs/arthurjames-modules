@@ -111,6 +111,10 @@
 #   Boolean.
 #   Default: false
 #
+# [*plugin_network_listener_ip*]
+#   IP-address the collectd monitor should listen to
+#   Default: 0.0.0.0
+#
 # [*plugin_network_server*]
 #   Hostname of the central collectd server your instance is writing to. 
 #
@@ -197,6 +201,7 @@ class arthurjames::profile_collectd (
   $plugin_java                             = false,
   $plugin_interface_interfaces             = ['lo'],
   $plugin_interface_ignoreselected         = true,
+  $plugin_network_listener_ip              = '0.0.0.0',
   $plugin_network_port                     = 25826,
   $plugin_write_graphite_graphiteprefix    = undef,
   $plugin_write_graphite_graphite_protocol = 'tcp',
@@ -212,44 +217,54 @@ class arthurjames::profile_collectd (
   $plugin_write_graphite_graphiteport      = $graphiteport
 
   # validate boolean params
-  validate_bool($plugin_network_listener)
-  validate_bool($fqdnlookup)
-  validate_bool($plugin_cpu_reportbystate)
-  validate_bool($plugin_cpu_reportbycpu)
-  validate_bool($plugin_cpu_valuespercentage)
-  validate_bool($plugin_df_ignoreselected)
-  validate_bool($plugin_df_reportbydevice)
-  validate_bool($plugin_df_reportinodes)
-  validate_bool($plugin_df_valuesabsolute)
-  validate_bool($plugin_df_valuespercentage)
-  validate_bool($plugin_disk_ignoreselected)
-  validate_bool($plugin_genericjmx_connection)
-  validate_bool($plugin_genericjmx_mbean)
-  validate_bool($plugin_java)
-  validate_bool($plugin_interface_ignoreselected)
-  validate_bool($purge)
-  validate_bool($purge_config)
-  validate_bool($recurse)
-  validate_bool($write_graphite)
+  validate_bool(
+    $plugin_network_listener,
+    $fqdnlookup,
+    $plugin_cpu_reportbystate,
+    $plugin_cpu_reportbycpu,
+    $plugin_cpu_valuespercentage,
+    $plugin_df_ignoreselected,
+    $plugin_df_reportbydevice,
+    $plugin_df_reportinodes,
+    $plugin_df_valuesabsolute,
+    $plugin_df_valuespercentage,
+    $plugin_disk_ignoreselected,
+    $plugin_genericjmx_connection,
+    $plugin_genericjmx_mbean,
+    $plugin_java,
+    $plugin_interface_ignoreselected,
+    $purge,
+    $purge_config,
+    $recurse,
+    $write_graphite
+  )
 
   # validate integer params
-  validate_integer($graphiteport)
-  validate_integer($plugin_network_port)
+  validate_integer(
+    $graphiteport,
+    $plugin_network_port
+  )
+
+  # validate ip addresses
+  validate_ip_address($plugin_network_listener_ip)
   
   # validate string parameters
   validate_string($graphitehost)
 
   # validate array params
-  validate_array($parameterless_plugins)
-  validate_array($plugin_df_fstypes)
-  validate_array($plugin_df_mountpoints)
-  validate_array($plugin_disk_disks)
-  validate_array($plugin_interface_interfaces)
+  validate_array(
+    $parameterless_plugins,
+    $plugin_df_fstypes,
+    $plugin_df_mountpoints,
+    $plugin_disk_disks,
+    $plugin_interface_interfaces
+  )
 
   # validate hash params
-  validate_hash($plugin_genericjmx_connection_params)
-  validate_hash($plugin_genericjmx_mbean_params)
-
+  validate_hash(
+    $plugin_genericjmx_connection_params,
+    $plugin_genericjmx_mbean_params
+  )
 
   class { '::collectd':
     fqdnlookup   => $fqdnlookup,
@@ -263,7 +278,7 @@ class arthurjames::profile_collectd (
   ## all other collectd intances.
   if $plugin_network_listener {
     ## network plugin can send values to OR receive values from other instances.
-    collectd::plugin::network::listener{ '0.0.0.0':
+    collectd::plugin::network::listener{ $plugin_network_listener_ip:
       port => $plugin_network_port
     }
   }
