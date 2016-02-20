@@ -201,7 +201,7 @@ class arthurjames::profile_collectd (
   $plugin_java                             = false,
   $plugin_interface_interfaces             = ['lo'],
   $plugin_interface_ignoreselected         = true,
-  $plugin_network_listener_ip              = '0.0.0.0',
+  $plugin_network_listener_ip              = $::ipaddress,
   $plugin_network_port                     = 25826,
   $plugin_write_graphite_graphiteprefix    = undef,
   $plugin_write_graphite_graphite_protocol = 'tcp',
@@ -265,7 +265,7 @@ class arthurjames::profile_collectd (
     $plugin_genericjmx_connection_params,
     $plugin_genericjmx_mbean_params
   )
-
+  
   class { '::collectd':
     fqdnlookup   => $fqdnlookup,
     purge        => $purge,
