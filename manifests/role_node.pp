@@ -35,8 +35,18 @@
 #
 # Copyright 2015 Your name here, unless otherwise noted.
 #
-class arthurjames::role_node {
+class arthurjames::role_node(
+  $collectd_enabled = true
+) {
+
+  validate_bool( $collectd_enabled )
+
   include ::timezone
-  include ::arthurjames::profile_collectd
   include ::arthurjames::profile_puppet
+
+  if $collectd_enabled {
+    notify { 'collectd enabled': }
+    include ::arthurjames::profile_collectd
+  }
+
 }
