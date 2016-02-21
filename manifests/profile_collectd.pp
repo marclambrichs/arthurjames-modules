@@ -5,10 +5,14 @@
 # === Parameters
 #
 # [*graphitehost*]
-#   String to define the host of the graphite server where the metrics can be written to.
+#   String to define the host of the graphite server where the metrics can be
+#   written to.
 #
 # [*graphite_port*]
 #   Integer to define the port on which the graphite server is listening.
+#
+# [*package_ensure*]
+#   Indicates collectd package version that needs to be installed.
 #
 # [*parameterless_plugins*]
 #   Array of plugins that can be added with collectd::plugin
@@ -25,18 +29,19 @@
 #   individual cpus, only a global sum of cpu states is emitted.
 #
 # [*plugin_cpu_valuespercentage*]
-#   Boolean. This option is only considered when both <tt>plugin_cpu_reportbystate</tt>
-#   and <tt>plugin_cpu_reportbycpu</tt> are set to <tt>true</tt>. In this case
-#   by default, metrics will be reported as Jiffies. By setting this option to
-#   <tt>true</tt>, you can request percentage values in the un-aggregated (per-
-#   cpu, per-state) mode as well.
+#   Boolean. This option is only considered when both 
+#   <tt>plugin_cpu_reportbystate</tt> and <tt>plugin_cpu_reportbycpu</tt> 
+#   are set to <tt>true</tt>. In this case by default, metrics will be reported
+#   as Jiffies. By setting this option to <tt>true</tt>, you can request
+#   percentage values in the un-aggregated (per-cpu, per-state) mode as well.
 #
 # [*plugin_df_fstypes*]
 #   Array containing all filesystemtypes that should be monitered. 
 #   Default: ['nfs', 'tmpfs', 'autofs', 'gpfs', 'proc', 'devpts']
 #
 # [*plugin_df_ignoreselected*]
-#   Boolean. If set to <tt>true</tt> the given mountpoints will NOT be monitored.
+#   Boolean. If set to <tt>true</tt> the given mountpoints will NOT be 
+#   monitored.
 #   Default: true
 #
 # [*plugin_df_mountpoints*] 
@@ -44,19 +49,22 @@
 #   Default: ['/', '/var', '/var/log', '/tmp', '/usr']
 #
 # [*plugin_df_reportbydevice*]
-#   Boolean. Report using the device name rather than the mountpoint. i.e. with <tt>false</tt>
-#   the default, it will report a disk as "root", but with true, it will be "sda1".
+#   Boolean. Report using the device name rather than the mountpoint. i.e. with
+#   <tt>false</tt>, the default, it will report a disk as "root", but with true,
+#   it will be "sda1".
 #
 # [*plugin_df_reportinodes*]
 #   Boolean. Enables or disables reporting of free, reserved and used inodes. 
 #   Default: false.
 #
 # [*plugin_df_valuesabsolute*]
-#   Boolean. Enables or disables reporting of free and used diskspace in 1k blocks.
+#   Boolean. Enables or disables reporting of free and used diskspace in 1k
+#   blocks.
 #   Default: true.
 #
 # [*plugin_df_valuespercentage*]
-#   Boolean. Enables or disables reporting of free and used disk space in percentage.
+#   Boolean. Enables or disables reporting of free and used disk space in
+#   percentage.
 #   Default: false.
 #
 # [*plugin_disk_disks*]
@@ -133,7 +141,8 @@
 #   Default:  ''
 #
 # [*plugin_write_graphite_graphite_protocol*]
-#   Protocol that's being used to write to graphite. Either <tt>tcp</tcp> or <tt>udp</tt>.
+#   Protocol that's being used to write to graphite. Either <tt>tcp</tcp> or
+#   <tt>udp</tt>.
 #   Default: 'tcp'
 #
 # [*purge*]
@@ -208,7 +217,7 @@ class arthurjames::profile_collectd (
   $purge                                   = true,
   $purge_config                            = true,
   $recurse                                 = true,
-  $version                                 = present,
+  $package_ensure                          = undef,
   $write_graphite                          = true,
 ) {
 
@@ -267,11 +276,11 @@ class arthurjames::profile_collectd (
   )
   
   class { '::collectd':
-    fqdnlookup   => $fqdnlookup,
-    purge        => $purge,
-    purge_config => $purge_config,
-    recurse      => $recurse,
-    version      => $version
+    fqdnlookup     => $fqdnlookup,
+    package_ensure => $package_ensure,
+    purge          => $purge,
+    purge_config   => $purge_config,
+    recurse        => $recurse,
   }
 
   ## Check if this is the central collectd server. It should receive data from
