@@ -41,6 +41,7 @@ class arthurjames::role_node(
 
   validate_bool( $collectd_enabled )
 
+  include ::ntp
   include ::timezone
   include ::arthurjames::profile_puppet
 
