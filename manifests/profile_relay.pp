@@ -10,6 +10,7 @@ class arthurjames::profile_relay (
       include carbon_relay_ng
     }
     default: {
+      fail("Relay type ${relay_type} is not implemented.")
     }
   }
 }
