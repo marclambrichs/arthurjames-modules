@@ -1,5 +1,5 @@
 #
 class arthurjames::profile_graphite (
 ){
-  class { 'graphite': }
+  class { 'carbon': }
 }
