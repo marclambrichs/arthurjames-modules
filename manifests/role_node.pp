@@ -36,7 +36,9 @@
 # Copyright 2015 Your name here, unless otherwise noted.
 #
 class arthurjames::role_node(
-  $collectd_enabled = true
+  $collectd_enabled = true,
+  $nameservers      = [],
+  $searchpath       = [],
 ) {
 
   validate_bool( $collectd_enabled )
@@ -48,6 +50,11 @@ class arthurjames::role_node(
   if $collectd_enabled {
     notify { 'collectd enabled': }
     include ::arthurjames::profile_collectd
+  }
+
+  class { 'resolv_conf':
+    nameservers => $nameservers,
+    searchpath  => $searchpath,
   }
 
 }
