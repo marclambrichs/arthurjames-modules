@@ -340,6 +340,12 @@ class arthurjames::profile_collectd (
     ignoreselected => $plugin_interface_ignoreselected
   }
 
+  ## logfile plugin
+  class { 'collectd::plugin::logfile':
+    log_level => 'warning',
+    log_file  => '/var/log/collectd.log'
+  }
+
   collectd::plugin { $parameterless_plugins: }
 
   ## and last, but not least all plugins any user would like to use
