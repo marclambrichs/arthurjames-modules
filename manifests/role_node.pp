@@ -37,8 +37,8 @@
 #
 class arthurjames::role_node(
   $collectd_enabled = true,
-  $nameservers      = [],
-  $searchpath       = [],
+  $nameservers      = [$ipaddress],
+  $searchpath       = [$domain],
 ) {
 
   validate_bool( $collectd_enabled )
