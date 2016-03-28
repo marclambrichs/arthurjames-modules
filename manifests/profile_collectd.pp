@@ -180,7 +180,7 @@
 class arthurjames::profile_collectd (
   $plugin_network_listener                = false,
   $fqdnlookup                             = false,
-  $graphitehost                           = 'graphite-gold.europe.intranet',
+  $graphitehost                           = "graphite.${domain}",
   $graphiteport                           = 2003,
   $parameterless_plugins                  = [
     'entropy',
