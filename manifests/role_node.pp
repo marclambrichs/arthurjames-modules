@@ -57,6 +57,6 @@ class arthurjames::role_node(
     searchpath  => $searchpath,
   }
 
-  Class['resolv_conf'] -> Class['arthurjames::profile_puppet']
+  Class['resolv_conf'] -> Package <| |>
 
 }
