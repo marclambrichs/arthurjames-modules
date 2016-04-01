@@ -2,7 +2,7 @@
 #
 #
 class arthurjames::profile_graphite (
-  $carbon_caches     = [],
+  $carbon_caches     = {},
   $memcached_enabled = false,
 ){
   class { 'graphite_web': 
