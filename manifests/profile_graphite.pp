@@ -2,8 +2,8 @@
 #
 #
 class arthurjames::profile_graphite (
-  $carbon_caches     = {},
-  $memcached_enabled = false,
+  $carbon_caches         = {},
+  $memcached_enabled     = false,
 ){
 
   class { 'graphite_frontend':
@@ -14,4 +14,5 @@ class arthurjames::profile_graphite (
   class { 'carbon':
     cc_carbon_caches => $carbon_caches
   }
+
 }
