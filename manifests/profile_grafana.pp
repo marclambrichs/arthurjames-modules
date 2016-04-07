@@ -15,7 +15,6 @@
 #-# Expired days of log file(delete after max days), default is 7
 #-;max_days = 7
 class arthurjames::profile_grafana (
-
   $allow_sign_up               = true,
   $allow_org_create            = false,
   $auto_assign_org             = true,
@@ -35,11 +34,17 @@ class arthurjames::profile_grafana (
   $log_max_lines               = 1000000,
   $log_max_lines_shift         = 28,
   $log_daily_rotate            = true,
+  $login_remember_days         = 7,
   $log_level                   = 'Info',
   $log_max_days                = 7,
-  $login_remember_days         = 7,
   $logmode                     = 'console, file',
   $secret_key                  = 'inWSYLbKCoLko',
+  $vhosts                      = {
+    $::fqdn => {
+      proxy_dest => 'http://127.0.0.1:3000'
+    },
+  }
+
 ){
 
   class { 'grafana':
@@ -113,10 +118,16 @@ class arthurjames::profile_grafana (
 
   }
 
-  apache::vhost { 'grafana.arthurjames.vagrant':
-    port       => '80',
-    docroot    => '/var/www',
-    proxy_dest => 'http://127.0.0.1:3000',
+  $vhost_defaults = {
+    vhost_name     => '*',
+    doc_root       => '/var/www',
+    error_log      => true,
+    port           => 80,
+    ssl            => false,
+    ssl_protocol   => ['All', '-SSLv2', '-SSLv3'],
+    ssl_cipher     => 'AES128+EECDH:AES128+EDH',
   }
+
+  create_resources( 'apache::vhost', $vhosts, $vhost_defaults )
 }
 
