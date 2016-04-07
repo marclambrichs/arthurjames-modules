@@ -35,9 +35,9 @@ class arthurjames::profile_grafana (
   $log_max_lines               = 1000000,
   $log_max_lines_shift         = 28,
   $log_daily_rotate            = true,
-  $login_remember_days         = 7,
+  $log_level                   = 'Info',
   $log_max_days                = 7,
-  $loglevel                    = 'Info',
+  $login_remember_days         = 7,
   $logmode                     = 'console, file',
   $secret_key                  = 'inWSYLbKCoLko',
 ){
@@ -73,14 +73,14 @@ class arthurjames::profile_grafana (
         path    => '/var/lib/grafana/dashboards',
       },
       database          => {
-        'type' => $db_type
+        'type' => $db_type,
         path   => $db_path,
         name   => $db_name,
       },
       log               => {
         mode       => $logmode,
         buffer_len => $log_buffer_length,
-        level      => $loglevel,
+        level      => $log_level,
       },
       'log.console'     => {
         level => '',
