@@ -40,7 +40,7 @@ class arthurjames::profile_grafana (
   $logmode                     = 'console, file',
   $secret_key                  = 'inWSYLbKCoLko',
   $vhosts                      = {
-    $::fqdn => {
+    'grafana.arthurjames.vagrant' => {
       proxy_dest => 'http://127.0.0.1:3000'
     },
   }
