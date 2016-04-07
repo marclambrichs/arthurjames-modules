@@ -120,7 +120,7 @@ class arthurjames::profile_grafana (
 
   $vhost_defaults = {
     vhost_name     => '*',
-    doc_root       => '/var/www',
+    docroot        => '/var/www',
     error_log      => true,
     port           => 80,
     ssl            => false,
