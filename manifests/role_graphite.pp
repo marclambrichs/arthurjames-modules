@@ -1,15 +1,19 @@
-##
+# == Class arthurjames::role_graphite
+#
+#
 class arthurjames::role_graphite (
-  $grafana_enabled  = false,
-  $graphite_enabled = false,
+  $grafana_enabled   = false,
+  $graphite_enabled  = false,
   $memcached_enabled = false,
-  $statsd_enabled   = false
+  $relay_enabled     = false,
+  $statsd_enabled    = false
 ){
   validate_bool(
     $grafana_enabled,
     $graphite_enabled,
     $memcached_enabled,
-    $statsd_enabled
+    $relay_enabled,
+    $statsd_enabled,
   )
 
   if $grafana_enabled {
@@ -22,6 +26,9 @@ class arthurjames::role_graphite (
   }
   if $memcached_enabled {
     include ::arthurjames::profile_memcached
+  }
+  if $relay_enabled {
+    include ::arthurjames::profile_relay
   }
   if $statsd_enabled {
     include ::arthurjames::profile_statsd
