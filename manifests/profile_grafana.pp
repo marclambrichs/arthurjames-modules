@@ -19,7 +19,7 @@ class arthurjames::profile_grafana (
   $allow_sign_up               = true,
   $allow_org_create            = false,
   $auto_assign_org             = true,
-  $auth_assign_org_role        = 'Viewer'
+  $auth_assign_org_role        = 'Viewer',
   $admin_password              = 'changeme',
   $admin_user                  = 'admin',
   $cookie_username             = 'grafana_user',
@@ -38,7 +38,7 @@ class arthurjames::profile_grafana (
   $login_remember_days         = 7,
   $log_max_days                = 7,
   $loglevel                    = 'Info',
-  $logmode                     = 'console, file'
+  $logmode                     = 'console, file',
   $secret_key                  = 'inWSYLbKCoLko',
 ){
 

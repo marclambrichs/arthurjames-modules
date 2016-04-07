@@ -64,6 +64,7 @@ class arthurjames::profile_graphite (
     gw_python_memcached_version => $python_memcached_version,
     gw_pytz_version             => $pytz_version,
     gw_webapp_dir               => $webapp_dir,
+    ls_carbonlink_hosts         => $carbon_caches,
     ls_conf_dir                 => $config_dir,
     ls_content_dir              => $content_dir,
     ls_db_engine                => $db_engine,
