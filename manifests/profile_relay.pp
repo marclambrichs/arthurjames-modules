@@ -1,10 +1,15 @@
 #
 class arthurjames::profile_relay (
-  $relay_type = undef
+  $group      = 'carbon-c-relay',
+  $user       = 'carbon-c-relay',
+  $relay_type = undef,
 ){
   case $relay_type {
     'carbon-c-relay': {
-      include carbon_c_relay
+      class { 'carbon_c_relay':
+        group => $group,
+        user  => $user,
+      }
     }
     'carbon-relay-ng': {
       include carbon_relay_ng
