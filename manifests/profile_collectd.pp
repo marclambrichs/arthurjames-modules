@@ -11,6 +11,10 @@
 # [*graphite_port*]
 #   Integer to define the port on which the graphite server is listening.
 #
+# [*minimum_version*]
+#   Float. Minimum collectd version. Reduces the need for two puppet runs to
+#   coverge.
+#
 # [*package_ensure*]
 #   Indicates collectd package version that needs to be installed.
 #
@@ -182,6 +186,7 @@ class arthurjames::profile_collectd (
   $fqdnlookup                             = false,
   $graphitehost                           = "graphite.${domain}",
   $graphiteport                           = 2003,
+  $minimum_version                        = '5.5',
   $parameterless_plugins                  = [
     'entropy',
     'load',
@@ -195,7 +200,7 @@ class arthurjames::profile_collectd (
   $plugin_cpu_valuespercentage             = true,
   $plugin_df_fstypes                       = ['nfs', 'tmpfs', 'autofs', 'gpfs', 'lvm', 'proc', 'devpts'],
   $plugin_df_mountpoints                   = ['/', '/var', '/var/log', '/tmp', '/usr'],
-  $plugin_df_ignoreselected                = true,
+  $plugin_df_ignoreselected                = false,
   $plugin_df_reportbydevice                = false,
   $plugin_df_reportinodes                  = false,
   $plugin_df_valuesabsolute                = true,
@@ -256,6 +261,9 @@ class arthurjames::profile_collectd (
 
   # validate ip addresses
   validate_ip_address($plugin_network_listener_ip)
+
+  # validate numeric values (no integers)
+  validate_numeric($minimum_version)
   
   # validate string parameters
   validate_string($graphitehost)
@@ -276,11 +284,12 @@ class arthurjames::profile_collectd (
   )
   
   class { '::collectd':
-    fqdnlookup     => $fqdnlookup,
-    package_ensure => $package_ensure,
-    purge          => $purge,
-    purge_config   => $purge_config,
-    recurse        => $recurse,
+    fqdnlookup      => $fqdnlookup,
+    minimum_version => $minimum_version,
+    package_ensure  => $package_ensure,
+    purge           => $purge,
+    purge_config    => $purge_config,
+    recurse         => $recurse,
   }
 
   ## Check if this is the central collectd server. It should receive data from
