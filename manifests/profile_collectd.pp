@@ -186,6 +186,8 @@ class arthurjames::profile_collectd (
   $fqdnlookup                             = false,
   $graphitehost                           = "graphite.${domain}",
   $graphiteport                           = 2003,
+  $log_file                               = '/var/log/collectd.log',
+  $log_level                              = 'warning',
   $minimum_version                        = '5.5',
   $parameterless_plugins                  = [
     'entropy',
@@ -350,9 +352,15 @@ class arthurjames::profile_collectd (
   }
 
   ## logfile plugin
+  file { $log_file:
+    ensure => present,
+    group  => 'root',
+    mode   => '0644',
+    owner  => 'root',
+  }
   class { 'collectd::plugin::logfile':
-    log_level => 'warning',
-    log_file  => '/var/log/collectd.log'
+    log_level => $log_level,
+    log_file  => $log_file,
   }
 
   collectd::plugin { $parameterless_plugins: }
