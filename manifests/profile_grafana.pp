@@ -24,9 +24,13 @@ class arthurjames::profile_grafana (
   $cookie_username             = 'grafana_user',
   $cookie_remember_name        = 'grafana_remember',
   $data_source_proxy_whitelist = '',
-  $db_path                     = '/var/lib/grafana/grafana.db',
+  $db_datadir                  = '/var/lib/pgsql/data',
+  $db_host                     = '127.0.0.1:5432',
   $db_name                     = 'grafana',
-  $db_type                     = 'sqlite3',
+  $db_password                 = 'changeme',
+  $db_path                     = undef,
+  $db_type                     = 'postgres',
+  $db_user                     = 'grafana',
   $disable_gravatar            = false,
   $install_method              = 'repo',
   $log_buffer_length           = 10000,
@@ -46,6 +50,15 @@ class arthurjames::profile_grafana (
   }
 
 ){
+
+  class { 'postgresql::server':
+    datadir => $db_datadir
+  }
+
+  postgresql::server::db { $db_name:
+    user     => $db_user,
+    password => postgresql_password($db_user, $db_password),
+  } ->
 
   class { 'grafana':
     install_method => $install_method,
@@ -78,9 +91,12 @@ class arthurjames::profile_grafana (
         path    => '/var/lib/grafana/dashboards',
       },
       database          => {
-        'type' => $db_type,
-        path   => $db_path,
-        name   => $db_name,
+        host     => $db_host,
+        name     => $db_name,
+        password => $db_password,
+        path     => $db_path,
+        'type'   => $db_type,
+        user     => $db_user,
       },
       log               => {
         mode       => $logmode,
