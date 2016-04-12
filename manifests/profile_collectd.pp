@@ -184,8 +184,9 @@
 class arthurjames::profile_collectd (
   $plugin_network_listener                = false,
   $fqdnlookup                             = false,
-  $graphitehost                           = "graphite.${domain}",
+  $graphitehost                           = "graphite.${::domain}",
   $graphiteport                           = 2003,
+  $interval                               = 60,
   $log_file                               = '/var/log/collectd.log',
   $log_level                              = 'warning',
   $minimum_version                        = '5.5',
@@ -256,10 +257,11 @@ class arthurjames::profile_collectd (
   )
 
   # validate integer params
-  validate_integer(
+  validate_integer([
     $graphiteport,
+    $interval,
     $plugin_network_port
-  )
+  ])
 
   # validate ip addresses
   validate_ip_address($plugin_network_listener_ip)
@@ -287,6 +289,7 @@ class arthurjames::profile_collectd (
   
   class { '::collectd':
     fqdnlookup      => $fqdnlookup,
+    interval        => $interval,
     minimum_version => $minimum_version,
     package_ensure  => $package_ensure,
     purge           => $purge,
