@@ -182,15 +182,15 @@
 # Copyright 2016 Melange IT B.V.
 #
 class arthurjames::profile_collectd (
-  $plugin_network_listener                = false,
-  $fqdnlookup                             = false,
-  $graphitehost                           = "graphite.${::domain}",
-  $graphiteport                           = 2003,
-  $interval                               = 60,
-  $log_file                               = '/var/log/collectd.log',
-  $log_level                              = 'warning',
-  $minimum_version                        = '5.5',
-  $parameterless_plugins                  = [
+
+  $fqdnlookup                              = false,
+  $graphitehost                            = "graphite.${::domain}",
+  $graphiteport                            = 2003,
+  $interval                                = 60,
+  $log_file                                = '/var/log/collectd.log',
+  $log_level                               = 'warning',
+  $minimum_version                         = '5.4',
+  $parameterless_plugins                   = [
     'entropy',
     'load',
     'memory',
@@ -218,6 +218,7 @@ class arthurjames::profile_collectd (
   $plugin_java                             = false,
   $plugin_interface_interfaces             = ['lo'],
   $plugin_interface_ignoreselected         = true,
+  $plugin_network_listener                 = false,
   $plugin_network_listener_ip              = $::ipaddress,
   $plugin_network_port                     = 25826,
   $plugin_write_graphite_graphiteprefix    = undef,
