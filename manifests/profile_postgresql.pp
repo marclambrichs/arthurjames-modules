@@ -1,7 +1,7 @@
-# == class arthurjames::profile_postgres
+# == class arthurjames::profile_postgresql
 #
 #
-class arthurjames::profile_postgres (
+class arthurjames::profile_postgresql (
   $bindir                   = undef,
   $confdir                  = undef,
   $client_package_name      = undef,
