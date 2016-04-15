@@ -51,15 +51,6 @@ class arthurjames::profile_grafana (
 
 ){
 
-  class { 'postgresql::server':
-    datadir => $db_datadir
-  }
-
-  postgresql::server::db { $db_name:
-    user     => $db_user,
-    password => postgresql_password($db_user, $db_password),
-  } ->
-
   class { 'grafana':
     install_method => $install_method,
     cfg            => {
@@ -131,7 +122,6 @@ class arthurjames::profile_grafana (
       },
 
     },
-
   }
 
   $vhost_defaults = {

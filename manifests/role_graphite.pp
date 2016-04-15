@@ -2,18 +2,20 @@
 #
 #
 class arthurjames::role_graphite (
-  $grafana_enabled   = false,
-  $graphite_enabled  = false,
-  $logrotate_enabled = false,
-  $memcached_enabled = false,
-  $relay_enabled     = false,
-  $statsd_enabled    = false
+  $grafana_enabled    = false,
+  $graphite_enabled   = false,
+  $logrotate_enabled  = false,
+  $memcached_enabled  = false,
+  $postgresql_enabled = false,
+  $relay_enabled      = false,
+  $statsd_enabled     = false
 ){
   validate_bool(
     $grafana_enabled,
     $graphite_enabled,
     $logrotate_enabled,
     $memcached_enabled,
+    $postgresql_enabled,
     $relay_enabled,
     $statsd_enabled,
   )
@@ -32,6 +34,9 @@ class arthurjames::role_graphite (
   if $memcached_enabled {
     include ::arthurjames::profile_memcached
   }
+  if $postgresql_enabled {
+    include ::arthurjames::profile_postgresql
+  }
   if $relay_enabled {
     include ::arthurjames::profile_relay
   }
@@ -39,5 +44,6 @@ class arthurjames::role_graphite (
     include ::arthurjames::profile_statsd
   }
 
+  Class['::arthurjames::profile_postgresql'] -> Class['::arthurjames::profile_graphite']
   Class['::arthurjames::profile_memcached'] -> Class['::arthurjames::profile_graphite']
 }
