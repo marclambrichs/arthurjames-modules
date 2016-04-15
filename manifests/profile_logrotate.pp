@@ -1,14 +1,21 @@
 # == class arthurjames::profile_logrotate
 #
 #
-class arthurjames::profile_logrotate {
+class arthurjames::profile_logrotate (
+  $compress = true,
+  $create   = true,
+  $dataext  = true,
+  $ensure   = present,
+  $rules    = {},
+){
   
   class { '::logrotate':
-    ensure => present,
+    ensure => $ensure,
     config => {
-      compress => true,
-      create   => true,
-      dateext  => true,
-    }
+      compress => $compress,
+      create   => $create,
+      dateext  => $dataext,
+    },
+    rules  => $rules,
   }
 }
