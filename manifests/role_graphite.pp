@@ -4,6 +4,7 @@
 class arthurjames::role_graphite (
   $grafana_enabled   = false,
   $graphite_enabled  = false,
+  $logrotate_enabled = false,
   $memcached_enabled = false,
   $relay_enabled     = false,
   $statsd_enabled    = false
@@ -11,6 +12,7 @@ class arthurjames::role_graphite (
   validate_bool(
     $grafana_enabled,
     $graphite_enabled,
+    $logrotate_enabled,
     $memcached_enabled,
     $relay_enabled,
     $statsd_enabled,
@@ -23,6 +25,9 @@ class arthurjames::role_graphite (
     class { 'arthurjames::profile_graphite':
       memcached_enabled => $memcached_enabled
     }
+  }
+  if $logrotate_enabled {
+    include ::arthurjames::profile_logrotate
   }
   if $memcached_enabled {
     include ::arthurjames::profile_memcached
