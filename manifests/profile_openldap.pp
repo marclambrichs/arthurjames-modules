@@ -1,7 +1,9 @@
 # == class arthurjames::profile_openldap
 #
 #
-class arthurjames::profile_openldap {
+class arthurjames::profile_openldap (
+  $entries = {}
+){
 
   class { 'ldap::server':
     suffix     => 'dc=arthurjames,dc=vagrant',
@@ -27,6 +29,5 @@ class arthurjames::profile_openldap {
 
   $password = sha1digest('changeme')
 
-  $ldap_entries = hiera_hash('ldap::entries')
-  create_resources('ldap_entry',$ldap_entries,$ldap_defaults)
+  create_resources('ldap_entry',$entries,$ldap_defaults)
 }
