@@ -13,7 +13,7 @@ class arthurjames::profile_openldap {
     ssl_key    => '/etc/ssl/private/ldapserver.key',
   }
 
-  n2dn("$::domain")
+  $dn = domain2dn($::domain)
 
   $ldap_defaults = {
     ensure => present,
@@ -25,7 +25,7 @@ class arthurjames::profile_openldap {
     password => 'password'
   }
 
-  $password = sha1digest("changeme")
+  $password = sha1digest('changeme')
 
   $ldap_entries = hiera_hash('ldap::entries')
   create_resources('ldap_entry',$ldap_entries,$ldap_defaults)
