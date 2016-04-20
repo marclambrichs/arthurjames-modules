@@ -28,5 +28,5 @@ class profile_openldap {
   $password = sha1digest("changeme")
 
   $ldap_entries = hiera_hash('ldap::entries')
-  create_resources('ldap_entry',$ldap_entries,$ldap_defaults)}
+  create_resources('ldap_entry',$ldap_entries,$ldap_defaults)
 }
