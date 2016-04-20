@@ -1,3 +1,3 @@
-class arthurjames::role_log4all {
+class arthurjames::role_elasticsearch {
   include ::arthurjames::profile_elasticsearch
 }
