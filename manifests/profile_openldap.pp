@@ -1,7 +1,7 @@
-# == class profile_openldap
+# == class arthurjames::profile_openldap
 #
 #
-class profile_openldap {
+class arthurjames::profile_openldap {
 
   class { 'ldap::server':
     suffix     => 'dc=arthurjames,dc=vagrant',
