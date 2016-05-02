@@ -2,12 +2,15 @@
 #
 #
 class arthurjames::profile_prometheus (
+  $apache_service_name = 'httpd'
 ){
+  
+  include apache
 
-  Package { ensure => 'installed' }
+  selboolean { 'httpd_can_network_connect':
+    persistent => true,
+    value      => on,
+  }
 
-  $packages = [ 'golang' ]
-
-  package { $packages: }
-
+  Selboolean['httpd_can_network_connect'] ~> Service[$apache_service_name]
 }
