@@ -1,7 +1,7 @@
 # == Class arthurjames::role_icinga2
 #
 #
-class arthurjames::icinga2
+class arthurjames::role_icinga2 (
   $icinga2_enabled    = true,
 ){
   validate_bool(
