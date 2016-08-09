@@ -1,3 +1,6 @@
+# == Class arthurjames::role_neo4j
+#
+#
 class arthurjames::role_neo4j (
   $neo4j_enabled   = false,
 ){
